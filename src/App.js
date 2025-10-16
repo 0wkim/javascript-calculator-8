@@ -3,7 +3,12 @@ import { Console } from "@woowacourse/mission-utils";
 class App {
   async run() {
     const INPUT = await Console.readLineAsync("덧셈할 문자열을 입력해 주세요. \n");
-
+  
+    // 입력값이 빈 경우 예외 발생
+    if (!INPUT || INPUT.trim() === "") {
+      throw new Error ("[ERROR] 문자열이 입력되지 않았습니다.");
+    }
+    
     // Console.print(`입력 된 문자열: ${INPUT}`);
 
     // 입력된 문자열의 앞뒤 공백 제거
@@ -73,15 +78,26 @@ class App {
     // INPUT.replace(/\s/g, ""); -> 전체 공백 제거 
     // trim, split, substr, substring, slice 
 
+    numbers = numbers.map(Number);
+
+    // 음수를 입력하는 경우 예외 발생
+    numbers.map(num => {
+      if (num < 0) {
+        throw new Error("[ERROR] 음수는 사용할 수 없습니다.");
+      }
+    });
 
     // 숫자 합 계산
-    const SUM = numbers.map(Number).reduce((accumulator, currentValue) => {
+    const SUM = numbers.reduce((accumulator, currentValue) => {
       return accumulator + currentValue
     }, 0);
 
     Console.print(`결과 : ${SUM}`);
 
+  } catch (e) {
+    throw e;
   }
+
 }
 
 export default App;
