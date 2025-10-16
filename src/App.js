@@ -4,11 +4,11 @@ class App {
   async run() {
     const INPUT = await Console.readLineAsync("덧셈할 문자열을 입력해 주세요. \n");
 
-    Console.print(`입력 된 문자열: ${INPUT}`);
+    // Console.print(`입력 된 문자열: ${INPUT}`);
 
     // 입력된 문자열의 앞뒤 공백 제거
     let trim_input = INPUT.trim();
-    Console.print(`앞뒤 공백 제거 된 문자열: ${trim_input}`);
+    // Console.print(`앞뒤 공백 제거 된 문자열: ${trim_input}`);
 
     // 쉼표, 콜론 구분 함수
     const splitString = (str) => {
@@ -38,7 +38,7 @@ class App {
     // 커스텀 구분자가 존재하는 경우
     if (trim_input.includes('\/\/') && trim_input.includes('\\n')) {
       saveDelimiter(trim_input);
-      Console.print(`커스텀 구분자: ${delimiter}`);
+      // Console.print(`커스텀 구분자: ${delimiter}`);
 
       // 문자열에 커스텀 구분자가 있으면, 해당 부분을 삭제
       for (let i = 0; i < delimiter.length; i++) {
@@ -67,11 +67,19 @@ class App {
       numbers = splitString(trim_input);
     }
 
-    Console.print(`숫자: ${numbers}`);
+    // Console.print(`숫자: ${numbers}`);
 
 
     // INPUT.replace(/\s/g, ""); -> 전체 공백 제거 
     // trim, split, substr, substring, slice 
+
+
+    // 숫자 합 계산
+    const SUM = numbers.map(Number).reduce((accumulator, currentValue) => {
+      return accumulator + currentValue
+    }, 0);
+
+    Console.print(`결과 : ${SUM}`);
 
   }
 }
