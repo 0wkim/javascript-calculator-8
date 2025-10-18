@@ -10,42 +10,42 @@ class App {
     // 기본 구분자 (쉼표, 콜론) 구분 함수
     const splitString = (str) => {
       str = str.toString();
-      const SPLIT_INPUT = str.split(/:|,/);
-      return SPLIT_INPUT;
+      const split_input = str.split(/:|,/);
+      return split_input;
     };
 
     // 커스텀 구분자 저장 배열
     const DELIMITERS = [];
 
-    // 구분된 숫자 저장
+    // 구분된 숫자 저장 배열
     let numbers_array = [];
 
     // 커스텀 구분자 저장 함수 
     const saveDelimiters = (trim_input) => {
       while(trim_input.includes('\/\/') && trim_input.includes('\\n')) {
-        const START = trim_input.indexOf("\/\/") + 2;
-        const END = trim_input.indexOf('\\n');
+        const startIndex = trim_input.indexOf("\/\/") + 2;
+        const endIndex = trim_input.indexOf('\\n');
 
-        DELIMITERS.push(trim_input.substring(START, END));
+        DELIMITERS.push(trim_input.substring(startIndex, endIndex));
 
-        trim_input = trim_input.slice(END + 2);
+        trim_input = trim_input.slice(endIndex + 2);
       }
     };
 
     // 커스텀 구분자가 존재하는 경우
-    if (trim_input.includes('\/\/') && trim_input.includes('\\n')) {
+    if (trim_input.includes('//') && trim_input.includes('\\n')) {
       // 커스텀 구분자 저장
       saveDelimiters(trim_input);
       // Console.print(`커스텀 구분자: ${DELIMITERS}`);
 
-      DELIMITERS.map((element) => {
+      DELIMITERS.forEach((element) => {
         // [예외처리] 커스텀 구분자 내에 문자가 2개 이상일 경우
         if (element.length >= 2) {
           throw new Error("[ERROR] 커스텀 구분자는 한 글자만 지정 가능합니다.");
         }
 
         // [예외처리] 입력값으로 0을 받은 경우 (0으로 시작하는 소수점이나, 10, 20 등 0을 포함한 숫자는 제외)
-        else if ((element !== "0") && INPUT.match(/(^|[^0-9])0+([^0-9]|$)/g) && !INPUT.includes("0.")) {
+        if ((element !== "0") && INPUT.match(/(^|[^0-9])0+([^0-9]|$)/g) && !INPUT.includes("0.")) {
           throw new Error("[ERROR] 0은 입력할 수 없습니다. 양수만 입력해주세요.")
         }
       });
@@ -91,7 +91,7 @@ class App {
     // Console.print(`숫자: ${numbers}`);
 
     // [예외처리] 구분자, 양수 외의 문자를 입력하여 numbers에 NaN이 존재하는 경우 
-    if (numbers.includes(NaN)) {
+    if (numbers.some(num => isNaN(num))) {
       throw new Error("[ERROR] 구분자와 양수 외엔 입력할 수 없습니다.");
     }
 
@@ -109,10 +109,7 @@ class App {
 
     Console.print(`결과 : ${SUM}`);
 
-  } catch (e) {
-    throw e;
-  }
-
+  } 
 }
 
 export default App;
