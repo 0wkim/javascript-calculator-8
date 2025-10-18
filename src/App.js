@@ -4,18 +4,10 @@ class App {
   async run() {
     const INPUT = await Console.readLineAsync("덧셈할 문자열을 입력해 주세요. \n");
   
-    // 입력값이 빈 경우 예외 발생
-    if (!INPUT || INPUT.trim() === "") {
-      throw new Error ("[ERROR] 문자열이 입력되지 않았습니다.");
-    }
-    
-    // Console.print(`입력 된 문자열: ${INPUT}`);
-
     // 입력된 문자열의 앞뒤 공백 제거
     let trim_input = INPUT.trim();
-    // Console.print(`앞뒤 공백 제거 된 문자열: ${trim_input}`);
 
-    // 쉼표, 콜론 구분 함수
+    // 기본 구분자 (쉼표, 콜론) 구분 함수
     const splitString = (str) => {
       str = str.toString();
       const SPLIT_INPUT = str.split(/:|,/);
@@ -23,68 +15,91 @@ class App {
     };
 
     // 커스텀 구분자 저장 배열
-    const delimiter = [];
+    const DELIMITERS = [];
+
+    // 구분된 숫자 저장
+    let numbers_array = [];
 
     // 커스텀 구분자 저장 함수 
-    const saveDelimiter = (trim_input) => {
+    const saveDelimiters = (trim_input) => {
       while(trim_input.includes('\/\/') && trim_input.includes('\\n')) {
-        let START = trim_input.indexOf("\/\/") + 2;
-        let END = trim_input.indexOf('\\n');
+        const START = trim_input.indexOf("\/\/") + 2;
+        const END = trim_input.indexOf('\\n');
 
-        delimiter.push(trim_input.substring(START, END));
+        DELIMITERS.push(trim_input.substring(START, END));
 
         trim_input = trim_input.slice(END + 2);
       }
     };
 
-    // 구분 된 숫자 저장
-    let numbers = [];
-
     // 커스텀 구분자가 존재하는 경우
     if (trim_input.includes('\/\/') && trim_input.includes('\\n')) {
-      saveDelimiter(trim_input);
-      // Console.print(`커스텀 구분자: ${delimiter}`);
+      // 커스텀 구분자 저장
+      saveDelimiters(trim_input);
+      // Console.print(`커스텀 구분자: ${DELIMITERS}`);
 
-      // 문자열에 커스텀 구분자가 있으면, 해당 부분을 삭제
-      for (let i = 0; i < delimiter.length; i++) {
-        trim_input = trim_input.replace(`\/\/${delimiter[i]}\\n`, '');
+      DELIMITERS.map((element) => {
+        // [예외처리] 커스텀 구분자 내에 문자가 2개 이상일 경우
+        if (element.length >= 2) {
+          throw new Error("[ERROR] 커스텀 구분자는 한 글자만 지정 가능합니다.");
+        }
 
-        // 커스텀 구분자가 삭제된 문자열의 앞뒤 공백 제거
-        trim_input = trim_input.trim();
+        // [예외처리] 입력값으로 0을 받은 경우 (0으로 시작하는 소수점이나, 10, 20 등 0을 포함한 숫자는 제외)
+        else if ((element !== "0") && INPUT.match(/(^|[^0-9])0+([^0-9]|$)/g) && !INPUT.includes("0.")) {
+          throw new Error("[ERROR] 0은 입력할 수 없습니다. 양수만 입력해주세요.")
+        }
+      });
 
-        // Console.print(`커스텀 구분자 제외: ${trim_input}`);
+      // 입력받은 문자열에서 커스텀 구분자 제거
+      trim_input = trim_input.replace(/\/\/.\\n/g, '').trim();
 
+      // Console.print(`커스텀 구분자 제외: ${trim_input}`);
+
+      for (let i = 0; i < DELIMITERS.length; i++) {
         // 커스텀 구분자로 구분
-        numbers = trim_input.split(delimiter[i]);
+        trim_input = trim_input.split(DELIMITERS[i]).join();
       }
+    
+      const CUSTOM_INPUT = trim_input;
 
+      // Console.print(`커스텀 구분자로 구분 완료: ${CUSTOM_INPUT}`);
+
+      numbers_array = [CUSTOM_INPUT];
+
+      // 커스텀 구분자에 기본 구분자도 같이 존재하는 경우
       if (trim_input.includes(':') || trim_input.includes(',')) {
         // 쉼표, 콜론으로 구분
-        numbers = splitString(numbers);
+        numbers_array = splitString(CUSTOM_INPUT);
       }
-    } else {
-      // 커스텀 구분자가 없는 경우
+
+    } else { // 커스텀 구분자가 없는 경우
+
+      // [예외처리] 커스텀 구분자가 존재하지 않는데 입력값에 숫자 0이 존재하는 경우
+      if (trim_input.match(/(^|[^0-9])0+([^0-9]|$)/g) && !trim_input.includes("0.")) {
+        throw new Error ("[ERROR] 0은 입력할 수 없습니다. 양수만 입력해주세요.");
+      }
 
       // 문자열의 전체 공백 제거
       trim_input = trim_input.replace(/\s/g, "");
 
       // 쉼표, 콜론으로 구분
-      numbers = splitString(trim_input);
+      numbers_array = splitString(trim_input);
     }
+
+    let numbers = numbers_array.map(Number);
 
     // Console.print(`숫자: ${numbers}`);
 
+    // [예외처리] 구분자, 양수 외의 문자를 입력하여 numbers에 NaN이 존재하는 경우 
+    if (numbers.includes(NaN)) {
+      throw new Error("[ERROR] 구분자와 양수 외엔 입력할 수 없습니다.");
+    }
 
-    // INPUT.replace(/\s/g, ""); -> 전체 공백 제거 
-    // trim, split, substr, substring, slice 
-
-    numbers = numbers.map(Number);
-
-    // 음수를 입력하는 경우 예외 발생
+    // [예외처리] 음수를 입력하는 경우 예외 발생
     numbers.map(num => {
       if (num < 0) {
-        throw new Error("[ERROR] 음수는 사용할 수 없습니다.");
-      }
+        throw new Error("[ERROR] 양수만 사용할 수 있습니다.");
+      } 
     });
 
     // 숫자 합 계산
