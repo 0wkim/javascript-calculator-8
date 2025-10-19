@@ -44,7 +44,7 @@ class App {
         }
 
         // [예외처리] 입력값으로 0을 받은 경우 (0으로 시작하는 소수점이나, 10, 20 등 0을 포함한 숫자는 제외)
-        if ((element !== "0") && userInput.match(/(^|[^0-9])0+([^0-9]|$)/g) && !INPUT.includes("0.")) {
+        if ((element !== "0") && userInput.match(/(^|[^0-9])0+([^0-9]|$)/g) && !userInput.includes("0.")) {
           throw new Error("[ERROR] 0은 입력할 수 없습니다. 양수만 입력해주세요.")
         }
       });
