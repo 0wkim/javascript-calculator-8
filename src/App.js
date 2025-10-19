@@ -36,7 +36,6 @@ class App {
     if (trim_input.includes('//') && trim_input.includes('\\n')) {
       // 커스텀 구분자 저장
       saveDelimiters(trim_input);
-      // Console.print(`커스텀 구분자: ${DELIMITERS}`);
 
       DELIMITERS.forEach((element) => {
         // [예외처리] 커스텀 구분자 내에 문자가 2개 이상일 경우
@@ -53,16 +52,12 @@ class App {
       // 입력받은 문자열에서 커스텀 구분자 제거
       trim_input = trim_input.replace(/\/\/.\\n/g, '').trim();
 
-      // Console.print(`커스텀 구분자 제외: ${trim_input}`);
-
       for (let i = 0; i < DELIMITERS.length; i++) {
         // 커스텀 구분자로 구분
         trim_input = trim_input.split(DELIMITERS[i]).join();
       }
     
       const CUSTOM_INPUT = trim_input;
-
-      // Console.print(`커스텀 구분자로 구분 완료: ${CUSTOM_INPUT}`);
 
       numbers_array = [CUSTOM_INPUT];
 
@@ -87,8 +82,6 @@ class App {
     }
 
     let numbers = numbers_array.map(Number);
-
-    // Console.print(`숫자: ${numbers}`);
 
     // [예외처리] 구분자, 양수 외의 문자를 입력하여 numbers에 NaN이 존재하는 경우 
     if (numbers.some(num => isNaN(num))) {
