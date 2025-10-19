@@ -22,8 +22,8 @@ class App {
 
     // 커스텀 구분자 저장 함수 
     const saveDelimiters = (trim_input) => {
-      while(trim_input.includes('\/\/') && trim_input.includes('\\n')) {
-        const startIndex = trim_input.indexOf("\/\/") + 2;
+      while(trim_input.includes('//') && trim_input.includes('\\n')) {
+        const startIndex = trim_input.indexOf("//") + 2;
         const endIndex = trim_input.indexOf('\\n');
 
         DELIMITERS.push(trim_input.substring(startIndex, endIndex));
